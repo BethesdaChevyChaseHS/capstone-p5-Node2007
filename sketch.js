@@ -1,8 +1,12 @@
+
 function setup() {
     createCanvas(800, 600);
     setupDebugConsole();
 }
 
 function draw(){
-    text("Hello World!", 100, 300);
+    background("green");
+    text("Hello World!", 400, 200);
+    textSize(35);
+    textAlign("center");
 }
