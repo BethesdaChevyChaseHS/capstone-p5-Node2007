@@ -1,8 +1,16 @@
 
 function setup() {
-    createCanvas(800, 600);
+    createCanvas(600, 800);
     setupDebugConsole();
 }
+
+let character;
+let obstacles;
+let floor;
+
+let theGameOver = false;
+let haveGameBegun = false;
+let score = 0;
 
 function draw(){
     background("green");
