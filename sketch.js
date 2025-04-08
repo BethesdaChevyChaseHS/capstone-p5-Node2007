@@ -1,6 +1,7 @@
 
 function setup() {
     createCanvas(600, 800);
+    textFont("Courier New");
     setupDebugConsole();
 }
 
@@ -11,6 +12,11 @@ let floor;
 let theGameOver = false;
 let haveGameBegun = false;
 let score = 0;
+
+let minDistanceBetweenObstacles = 100;
+let nextReappearDistance;
+let isUnstoppable = false;
+
 
 function draw(){
     background("green");
