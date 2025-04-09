@@ -12,10 +12,14 @@ let minDistanceBetweenObstacles = 100;
 let nextReappearDistance;
 let isUnstoppable = false;
 
+function preLoad() {
+    codaFontRegular = loadFont("assets/fonts/Coda-Regular.ttf");
+}
+
 function setup() {
     createCanvas(600, 800);
+    textFont(codaFontRegular);
     setupDebugConsole();
-    codaFontRegular = loadFont('Coda-Regular.ttf');
 } 
 
 function draw(){
