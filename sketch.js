@@ -15,7 +15,7 @@ let isUnstoppable = false;
 function load() {
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
-
+// The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
 function setup() {
     createCanvas(1350, 700);
     setupDebugConsole();
@@ -24,7 +24,8 @@ function setup() {
     textFont(codaFontRegular);
     resetGame();
 } 
-
+// To reset the game, we set the score to 0, set the game over flag to false, and call the loop function to start the game again.
+// The loop function is called repeatedly to update the game state and render the graphics.
 function resetGame() {
     score = 0;
     theGameOver = false;
@@ -33,6 +34,8 @@ function resetGame() {
 
 function draw(){
     background("limegreen");
+    
+
     text("Hello World", 650, 300);
     textSize(32);
     textAlign("center");
