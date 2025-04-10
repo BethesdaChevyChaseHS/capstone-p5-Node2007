@@ -36,7 +36,7 @@ function draw(){
     background("limegreen");
     
 
-    text("Hello World", 650, 300);
+    text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");
 }
