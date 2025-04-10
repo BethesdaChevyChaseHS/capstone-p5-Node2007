@@ -12,19 +12,28 @@ let minDistanceBetweenObstacles = 100;
 let nextReappearDistance;
 let isUnstoppable = false;
 
-function preLoad() {
-    codaFontRegular = loadFont("assets/fonts/Coda-Regular.ttf");
+function load() {
+    codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
 
 function setup() {
-    createCanvas(600, 800);
-    textFont(codaFontRegular);
+    createCanvas(1350, 700);
     setupDebugConsole();
+    console.log("Debug console setup complete");
+    load();
+    textFont(codaFontRegular);
+    resetGame();
 } 
 
+function resetGame() {
+    score = 0;
+    theGameOver = false;
+    loop();
+}
+
 function draw(){
-    background("green");
-    text("Hello World", 200, 400);
+    background("limegreen");
+    text("Hello World", 650, 300);
     textSize(32);
     textAlign("center");
 }
