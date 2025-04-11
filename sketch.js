@@ -34,8 +34,6 @@ function resetGame() {
 
 function draw(){
     background("limegreen");
-    
-
     text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");

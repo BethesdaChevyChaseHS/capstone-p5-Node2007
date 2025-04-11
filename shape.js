@@ -6,19 +6,19 @@ class Shape {
         this.width = width;
         this.height = height;
     }
-    // Set the position of the shapes in the game
+    // Set the left position of the shapes in the game
     getLeft() {
         return this.x;
     }
-    // Set the position of the shapes in the game
+    // Set the right position of the shapes in the game
     getRight() {
         return this.x + this.width;
     }
-    // Set the position of the shapes in the game
+    // Set the top position of the shapes in the game
     getTop() {
         return this.y;
     }
-    // Set the position of the shapes in the game
+    // Set the bottom position of the shapes in the game
     getBottom() {
         return this.y + this.height;
     }
