@@ -29,6 +29,8 @@ function setup() {
 function resetGame() {
     score = 0;
     theGameOver = false;
+    character = new Character(floor.y);
+    obstacles = [new Obstacle(width, floor.y)];
     loop();
 }
 
@@ -37,4 +39,13 @@ function draw(){
     text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");
+    // loop through all the obstacles in the array and call the update function for each obstacle
+    for (let i = obstacles.length-1; i>= 0; i++) {
+        obstacles[i].update();
+        obstacles[i].draw();
+    }
+    //remove obstacles that are moving out of the screen
+    if (obstacles[i].getRight() < 0) {
+        obstacles.splice(i, 1);
+    }
 }
