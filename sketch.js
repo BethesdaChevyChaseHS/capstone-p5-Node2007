@@ -35,7 +35,7 @@ function resetGame() {
 }
 
 function draw(){
-    background("limegreen");
+    background(255);
     text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");
@@ -44,8 +44,23 @@ function draw(){
         obstacles[i].update();
         obstacles[i].draw();
     }
+    //if we hit the obstacle, end the game
+    if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
+        theGameOver = true;
+        noLoop(); // stop the game loop since the game is over
+    }
     //remove obstacles that are moving out of the screen
     if (obstacles[i].getRight() < 0) {
         obstacles.splice(i, 1);
     }
+    // Increment the score if the character has passed an obstacle
+    if (obstacles[i].hasScoredYet == false && obstacles[i].getRight() < character.x) {
+        obstacles[i].hasScoredYet = true;
+        score++;
+        console.log("Score: " + score);
+    }
+    character.update(floor.y);
+    character.draw();
+    obstacles.draw();
+    drawScore();
 }
