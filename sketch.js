@@ -21,6 +21,8 @@ function setup() {
     setupDebugConsole();
     console.log("Debug console setup complete");
     load();
+    // Create a new character object at the floor level
+    floor = new Floor();
     textFont(codaFontRegular);
     resetGame();
 } 
@@ -39,7 +41,7 @@ function draw(){
     text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");
-    // loop through all the obstacles in the array and call the update function for each obstacle
+    // loop through all the obstacles in the array and call the update function and draw function for each obstacle
     for (let i = obstacles.length-1; i>= 0; i++) {
         obstacles[i].update();
         obstacles[i].draw();
@@ -54,12 +56,17 @@ function draw(){
         obstacles.splice(i, 1);
     }
     // Increment the score if the character has passed an obstacle
+    // The condition checks if the obstacle has not scored yet and if the right edge of the obstacle is less than the x-coordinate of the character
+    // If both conditions are true, it means the character has passed the obstacle, so we increment the score and set hasScoredYet to true
+    // The hasScoredYet property is used to ensure that the score is only incremented once for each obstacle
     if (obstacles[i].hasScoredYet == false && obstacles[i].getRight() < character.x) {
         obstacles[i].hasScoredYet = true;
         score++;
         console.log("Score: " + score);
     }
+    // Updates the state of the character object
     character.update(floor.y);
+    // The floor.y is the y-coordinate of the floor, which is used to update the character's position and makes sure the character interacts correctly with the floor
     character.draw();
     obstacles.draw();
     drawScore();
