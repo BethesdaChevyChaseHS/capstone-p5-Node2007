@@ -71,3 +71,35 @@ function draw(){
     obstacles.draw();
     drawScore();
 }
+
+function drawScore() {
+    fill(0);
+    textSize(32);
+    textAlign(LEFT);
+    text("Score: " + score, 10, 30);
+
+    if (theGameOver) {
+        //dark overlay
+        fill(0, 0, 0, 100);
+        rect(0, 0, width, height);
+        //game over text
+        textSize(34);
+        textAlign(CENTER);
+        fill(255, 0, 0);
+        text("GAME OVER", width / 2, height / 2);
+        //Play again text
+        textSize(32);
+        text("Press p to play again!", width / 2, height / 2 + 50);
+    }
+    // If we are here, the game has not started yet for the first time
+    else if (haveGameBegun == false) {
+        //dark overlay
+        fill(0, 0, 0, 100);
+        rect(0, 0, width, height);
+        //draw game over text
+        textSize(34);
+        textAlign(CENTER);
+        fill(255, 0, 0);
+        text("Press p to play!", width / 2, height / 2);
+    }
+}
