@@ -41,7 +41,7 @@ function draw(){
     console.log("drawing");
     background(255,0,0);
     text("Press p to play!", 650, 300);
-    textSize(32);
+    textSize(35);
     textAlign("center");
 
 
@@ -81,7 +81,7 @@ function draw(){
     obstacles.draw();
     drawScore();
 }
-
+// The drawScore function is responsible for displaying the score on the screen
 function drawScore() {
     fill(0);
     textSize(32);
@@ -113,7 +113,8 @@ function drawScore() {
         text("Press p to play!", width / 2, height / 2);
     }
 }
-
+// The keyPressed function is called whenever a key is pressed
+// It checks for specific key presses and performs actions based on them
 function keyPressed() { 
     if (key == 'p' && character.isOnFloor()) { // p key to play
         character.jump();
@@ -123,8 +124,29 @@ function keyPressed() {
     if (theGameOver == true && key == 'p') {
         resetGame();
     }
+    //
     else if(haveGameBegun == false && key == 'p') {
         haveGameBegun = true;
         loop();
+    }
+}
+// The floor class is a subclass of the Shape class
+// It represents the ground in the game and is responsible for drawing the floor on the screen
+// The constructor initializes the floor's position and dimensions
+// The y-coordinate of the floor is set to 80% of the canvas height, and the height of the floor is calculated accordingly
+// The fill color of the floor is set to a specific color
+class Floor extends Shape {
+    constructor() {
+        let yFloor = height * 0.8;
+        let floorHeight = ceil(height - yFloor);
+        super(0, yFloor, width, floorHeight);
+        this.fillColor = color(130);
+    }
+    draw() {
+        push();
+        noStroke();
+        fill(this.fillColor);
+        rect(this.x, this.y, this.width, this.height);
+        pop();
     }
 }
