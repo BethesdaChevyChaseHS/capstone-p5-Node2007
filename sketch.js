@@ -19,10 +19,11 @@ function load() {
 function setup() {
     createCanvas(1350, 700);
     setupDebugConsole();
+    //floor = new Floor();
     console.log("Debug console setup complete");
     load();
     // Create a new character object at the floor level
-    floor = new Floor();
+    //floor = new Floor();
     textFont(codaFontRegular);
     resetGame();
 } 
@@ -31,14 +32,15 @@ function setup() {
 function resetGame() {
     score = 0;
     theGameOver = false;
-    character = new Character(floor.y);
-    obstacles = [new Obstacle(width, floor.y)];
+    //character = new Character(floor.y);
+    //obstacles = [new Obstacle(width, floor.y)];
     loop();
 }
 
 function draw(){
-    background(255);
-    text("Press 4 to play!", 650, 300);
+    console.log("drawing");
+    background(255,0,0);
+    text("Press p to play!", 650, 300);
     textSize(32);
     textAlign("center");
 
