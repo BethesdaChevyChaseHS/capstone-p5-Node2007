@@ -41,6 +41,9 @@ function draw(){
     text("Press 4 to play!", 650, 300);
     textSize(32);
     textAlign("center");
+
+
+
     // loop through all the obstacles in the array and call the update function and draw function for each obstacle
     for (let i = obstacles.length-1; i>= 0; i++) {
         obstacles[i].update();
@@ -52,6 +55,10 @@ function draw(){
         noLoop(); // stop the game loop since the game is over
     }
     //remove obstacles that are moving out of the screen
+    // The condition checks if the right edge of the obstacle is less than 0, which means it has moved out of the screen
+    // If this condition is true, we remove the obstacle from the array using splice
+    // The splice method removes the element at index i from the obstacles array
+    // The loop iterates from the end of the array to the beginning to avoid skipping elements when removing them
     if (obstacles[i].getRight() < 0) {
         obstacles.splice(i, 1);
     }
@@ -59,6 +66,7 @@ function draw(){
     // The condition checks if the obstacle has not scored yet and if the right edge of the obstacle is less than the x-coordinate of the character
     // If both conditions are true, it means the character has passed the obstacle, so we increment the score and set hasScoredYet to true
     // The hasScoredYet property is used to ensure that the score is only incremented once for each obstacle
+    // The score is incremented by 1, and a message is logged to the console
     if (obstacles[i].hasScoredYet == false && obstacles[i].getRight() < character.x) {
         obstacles[i].hasScoredYet = true;
         score++;
@@ -101,5 +109,20 @@ function drawScore() {
         textAlign(CENTER);
         fill(255, 0, 0);
         text("Press p to play!", width / 2, height / 2);
+    }
+}
+
+function keyPressed() { 
+    if (key == 'p' && character.isOnFloor()) { // p key to play
+        character.jump();
+    }
+
+    //check for special states like when the game is over or when the game has not started yet
+    if (theGameOver == true && key == 'p') {
+        resetGame();
+    }
+    else if(haveGameBegun == false && key == 'p') {
+        haveGameBegun = true;
+        loop();
     }
 }
