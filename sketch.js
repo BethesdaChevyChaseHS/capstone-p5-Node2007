@@ -12,6 +12,11 @@ let minDistanceBetweenObstacles = 100;
 let nextReappearDistance;
 let isUnstoppable = false;
 
+function preload() {
+    // Load the image for the background
+    sgImage = loadImage("Scenery.jpeg")
+}
+
 function load() {
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
@@ -38,8 +43,7 @@ function resetGame() {
 }
 
 function draw(){
-    console.log("drawing");
-    background(255,0,0);
+    image(sgImage, 0, 0, width, height);
     text("Press p to play!", 650, 300);
     textSize(35);
     textAlign("center");
@@ -153,5 +157,28 @@ class Floor extends Shape {
         rect(this.x, this.y, this.width, this.height);
         pop();
     }
-    
+}
+class Obstacle extends Shape {
+    constructor(x, yGround) {
+        let obstacleWidth = random(50, 100);
+        let obstacleHeight = random(50, 100);
+        let y = yGround - obstacleHeight;
+        super(x, y, obstacleWidth, obstacleHeight);
+        this.fillColor = color(130, 0, 0);
+        this.speed = 10;
+        this.hasScoredYet = false;
+    }
+    update() {
+        this.x -= this.speed;
+    }
+    checkCollision(shape) {
+        return this.overlaps(shape);
+    }
+    draw() {
+        push();
+        noStroke();
+        fill(this.fillColor);
+        rect(this.x, this.y, this.width, this.height);
+        pop();
+    }
 }
