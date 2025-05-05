@@ -151,6 +151,7 @@ class Floor extends Shape {
         this.fillColor = color(130);
     }
     draw() {
+        // Draw the floor as a rectangle
         push();
         noStroke();
         fill(this.fillColor);
@@ -175,6 +176,7 @@ class Obstacle extends Shape {
         return this.overlaps(shape);
     }
     draw() {
+        // Draw the obstacle as a rectangle
         push();
         noStroke();
         fill(this.fillColor);
