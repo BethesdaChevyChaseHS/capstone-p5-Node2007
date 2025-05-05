@@ -44,7 +44,7 @@ function draw(){
     textSize(35);
     textAlign("center");
 
-
+    
 
     // loop through all the obstacles in the array and call the update function and draw function for each obstacle
     for (let i = obstacles.length-1; i>= 0; i++) {
@@ -88,11 +88,15 @@ function drawScore() {
     textAlign(LEFT);
     text("Score: " + score, 10, 30);
 
+    // If the game is over, display the game over message and the score
+    // The condition checks if the game is over and if the score is greater than 0
+    // If both conditions are true, it means the game is over, and we display the game over message
+    // The text is displayed in the center of the screen, and the fill color is set to red
     if (theGameOver) {
         //dark overlay
         fill(0, 0, 0, 100);
         rect(0, 0, width, height);
-        //game over text
+        //Game Over text
         textSize(34);
         textAlign(CENTER);
         fill(255, 0, 0);
@@ -149,4 +153,5 @@ class Floor extends Shape {
         rect(this.x, this.y, this.width, this.height);
         pop();
     }
+    
 }
