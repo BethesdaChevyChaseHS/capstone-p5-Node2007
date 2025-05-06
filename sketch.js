@@ -21,13 +21,14 @@ function load() {
 // The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
 function setup() {
     createCanvas(1350, 700);
-    setupDebugConsole();
-    floor = new Floor();
+    floor = new Floor(); // Ensure this is initialized before referencing floor.y
     console.log("Debug console setup complete");
     load();
     // Create a new character object at the floor level
     //floor = new Floor();
     textFont(codaFontRegular);
+    obstacles = [new Obstacle(width, floor.y)];
+    character = new Character(floor.y);
     resetGame();
 } 
 // To reset the game, we set the score to 0, set the game over flag to false, and call the loop function to start the game again.
@@ -35,6 +36,7 @@ function setup() {
 function resetGame() {
     score = 0;
     theGameOver = false;
+    
     character = new Character(floor.y);
     obstacles = [new Obstacle(width, floor.y)];
     loop();
@@ -50,6 +52,31 @@ function draw(){
     for (let i = obstacles.length - 1; i >= 0; i--) {
         obstacles[i].update();
         obstacles[i].draw();
+
+        // Check for collision
+        // The checkCollision function checks if the character collides with any of the obstacles
+        // If the character collides with an obstacle and the game is not in unstoppable mode, set the game over flag to true
+        if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
+            theGameOver = true;
+            noLoop(); // Stop the game loop since the game is over
+        }
+
+        // Remove obstacles that are moving out of the screen
+        // The getRight function returns the rightmost x-coordinate of the obstacle
+        // If the rightmost x-coordinate of the obstacle is less than 0, it means the obstacle is out of the screen
+        if (obstacles[i].getRight() < 0) {
+            obstacles.splice(i, 1);
+        }
+
+        // Increment the score if the character has passed an obstacle
+        // The hasScoredYet variable is used to check if the character has already scored for this obstacle
+        // If the character's x-coordinate is greater than the rightmost x-coordinate of the obstacle, it means the character has passed the obstacle
+        // If the character has not scored yet for this obstacle, set the hasScoredYet variable to true and increment the score
+        if (!obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
+            obstacles[i].hasScoredYet = true;
+            score++;
+            console.log("Score: " + score);
+        }
     }
 
     // Updates the state of the character object
@@ -173,7 +200,7 @@ class Obstacle extends Shape {
             this.gravity = 0.5;
             this.velocityY = 0;
             this.yGround = yGround;
-            this.jumpStrength = 15; // Add this to the constructor
+            this.jumpStrength = 15; // Add this to the constructorth = 15; // Add this to the constructor
         }
         update(yGround) {
             this.velocityY += this.gravity;
@@ -209,4 +236,23 @@ class Obstacle extends Shape {
                 pop();
             }
         }
+class Shape {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    overlaps(other) {
+        return !(this.x + this.width < other.x ||
+                 this.x > other.x + other.width ||
+                 this.y + this.height < other.y ||
+                 this.y > other.y + other.height);
+    }
+
+    getRight() {
+        return this.x + this.width;
+    }
+}
 
