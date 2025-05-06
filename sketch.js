@@ -1,4 +1,3 @@
-
 let character;
 let obstacles;
 let floor;
@@ -13,8 +12,7 @@ let nextReappearDistance;
 let isUnstoppable = false;
 
 function preload() {
-    // Load the image for the background
-    sgImage = loadImage("Scenery.jpeg")
+    sgImage = loadImage("Scenery.jpeg"); // Ensure the file exists in the correct path
 }
 
 function load() {
@@ -24,7 +22,7 @@ function load() {
 function setup() {
     createCanvas(1350, 700);
     setupDebugConsole();
-    //floor = new Floor();
+    floor = new Floor();
     console.log("Debug console setup complete");
     load();
     // Create a new character object at the floor level
@@ -37,8 +35,8 @@ function setup() {
 function resetGame() {
     score = 0;
     theGameOver = false;
-    //character = new Character(floor.y);
-    //obstacles = [new Obstacle(width, floor.y)];
+    character = new Character(floor.y);
+    obstacles = [new Obstacle(width, floor.y)];
     loop();
 }
 
@@ -48,41 +46,16 @@ function draw(){
     textSize(35);
     textAlign("center");
 
-    
-
     // loop through all the obstacles in the array and call the update function and draw function for each obstacle
-    for (let i = obstacles.length-1; i>= 0; i++) {
+    for (let i = obstacles.length - 1; i >= 0; i--) {
         obstacles[i].update();
         obstacles[i].draw();
     }
-    //if we hit the obstacle, end the game
-    if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
-        theGameOver = true;
-        noLoop(); // stop the game loop since the game is over
-    }
-    //remove obstacles that are moving out of the screen
-    // The condition checks if the right edge of the obstacle is less than 0, which means it has moved out of the screen
-    // If this condition is true, we remove the obstacle from the array using splice
-    // The splice method removes the element at index i from the obstacles array
-    // The loop iterates from the end of the array to the beginning to avoid skipping elements when removing them
-    if (obstacles[i].getRight() < 0) {
-        obstacles.splice(i, 1);
-    }
-    // Increment the score if the character has passed an obstacle
-    // The condition checks if the obstacle has not scored yet and if the right edge of the obstacle is less than the x-coordinate of the character
-    // If both conditions are true, it means the character has passed the obstacle, so we increment the score and set hasScoredYet to true
-    // The hasScoredYet property is used to ensure that the score is only incremented once for each obstacle
-    // The score is incremented by 1, and a message is logged to the console
-    if (obstacles[i].hasScoredYet == false && obstacles[i].getRight() < character.x) {
-        obstacles[i].hasScoredYet = true;
-        score++;
-        console.log("Score: " + score);
-    }
+
     // Updates the state of the character object
     character.update(floor.y);
     // The floor.y is the y-coordinate of the floor, which is used to update the character's position and makes sure the character interacts correctly with the floor
     character.draw();
-    obstacles.draw();
     drawScore();
 }
 // The drawScore function is responsible for displaying the score on the screen
@@ -111,14 +84,15 @@ function drawScore() {
     }
     // If we are here, the game has not started yet for the first time
     else if (haveGameBegun == false) {
-        //dark overlay
+        // Dark overlay
         fill(0, 0, 0, 100);
         rect(0, 0, width, height);
-        //draw game over text
+        // Draw "Press p to play!" text
         textSize(34);
         textAlign(CENTER);
         fill(255, 0, 0);
         text("Press p to play!", width / 2, height / 2);
+    }
 }
 // The keyPressed function is called whenever a key is pressed
 // It checks for specific key presses and performs actions based on them
@@ -198,14 +172,17 @@ class Obstacle extends Shape {
             this.jumpSpeed = -15;
             this.gravity = 0.5;
             this.velocityY = 0;
+            this.yGround = yGround;
+            this.jumpStrength = 15; // Add this to the constructor
         }
         update(yGround) {
             this.velocityY += this.gravity;
-            this.velocityY += 0.9;
+            this.velocityY *= 0.9; // Apply some damping to the vertical velocity
+            this.y += this.velocityY;
 
             if (this.y + this.height > yGround) {
                 this.y = this.yGround - this.height;
-                this.velocityY = 0;
+                this.velocityY = 0; // Reset velocity only when hitting the ground
             }
         }
         // The jump function is called when the character jumps
@@ -214,6 +191,7 @@ class Obstacle extends Shape {
         jump() {
             this.velocityY += -this.jumpStrength;
         }
+        // Removed misplaced if block
         // The isOnFloor function checks if the character is on the floor
         // It compares the y-coordinate of the character with the y-coordinate of the floor
         // If the character's y-coordinate is greater than or equal to the floor's y-coordinate minus the character's height, it means the character is on the floor
@@ -231,4 +209,4 @@ class Obstacle extends Shape {
                 pop();
             }
         }
-    }
+
