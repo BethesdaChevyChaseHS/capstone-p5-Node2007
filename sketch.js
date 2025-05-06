@@ -119,7 +119,6 @@ function drawScore() {
         textAlign(CENTER);
         fill(255, 0, 0);
         text("Press p to play!", width / 2, height / 2);
-    }
 }
 // The keyPressed function is called whenever a key is pressed
 // It checks for specific key presses and performs actions based on them
@@ -150,6 +149,8 @@ class Floor extends Shape {
         super(0, yFloor, width, floorHeight);
         this.fillColor = color(130);
     }
+    // The draw function is responsible for drawing the character on the screen
+    // It uses the push and pop functions to save and restore the drawing state
     draw() {
         // Draw the floor as a rectangle
         push();
@@ -175,6 +176,8 @@ class Obstacle extends Shape {
     checkCollision(shape) {
         return this.overlaps(shape);
     }
+    // The draw function is responsible for drawing the character on the screen
+    // It uses the push and pop functions to save and restore the drawing state
     draw() {
         // Draw the obstacle as a rectangle
         push();
@@ -184,3 +187,48 @@ class Obstacle extends Shape {
         pop();
     }
 }
+    class Character extends Shape {
+        constructor(yGround) {
+            let characterWidth = 50;
+            let characterHeight = 50;
+            let y = yGround - characterHeight;
+            super(100, y, characterWidth, characterHeight);
+            this.fillColor = color(0, 0, 255);
+            this.speed = 5;
+            this.jumpSpeed = -15;
+            this.gravity = 0.5;
+            this.velocityY = 0;
+        }
+        update(yGround) {
+            this.velocityY += this.gravity;
+            this.velocityY += 0.9;
+
+            if (this.y + this.height > yGround) {
+                this.y = this.yGround - this.height;
+                this.velocityY = 0;
+            }
+        }
+        // The jump function is called when the character jumps
+        // It sets the vertical velocity of the character to a negative value, making it move upwards
+        // The jumpStrength variable determines how high the character jumps
+        jump() {
+            this.velocityY += -this.jumpStrength;
+        }
+        // The isOnFloor function checks if the character is on the floor
+        // It compares the y-coordinate of the character with the y-coordinate of the floor
+        // If the character's y-coordinate is greater than or equal to the floor's y-coordinate minus the character's height, it means the character is on the floor
+            isOnFloor() {
+                return this.y >= floor.y - this.height;
+            }
+            // The draw function is responsible for drawing the character on the screen
+            // It uses the push and pop functions to save and restore the drawing state
+            draw() {
+                // Draw the character as a rectangle
+                push();
+                noStroke();
+                fill(this.fillColor);
+                rect(this.x, this.y, this.width, this.height);
+                pop();
+            }
+        }
+    }
