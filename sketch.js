@@ -10,23 +10,23 @@ let codaFontRegular;
 let minDistanceBetweenObstacles = 100;
 let nextReappearDistance;
 let isUnstoppable = false;
+let sgImage;
 
 function preload() {
     sgImage = loadImage("Scenery.jpeg"); // Ensure the file exists in the correct path
 }
 
-function load() {
+function loadAssets() {
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
 // The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
 function setup() {
     createCanvas(1350, 700);
-    floor = new Floor(); // Ensure this is initialized before referencing floor.y
     console.log("Debug console setup complete");
     load();
     // Create a new character object at the floor level
-    //floor = new Floor();
     textFont(codaFontRegular);
+    floor = new Floor(); // Ensure this is initialized before referencing floor.y
     obstacles = [new Obstacle(width, floor.y)];
     character = new Character(floor.y);
     resetGame();
@@ -48,6 +48,17 @@ function draw(){
     textSize(35);
     textAlign("center");
 
+    // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
+    // The nextReappearDistance variable is used to control the distance between obstacles
+    // The random function generates a random number between the minimum distance and 1.2 times the width of the canvas
+    // The obstacles array is used to store the obstacles in the game
+    // The obstacles array is initialized with a new obstacle at the right edge of the canvas
+    // The Obstacle class is used to create new obstacles, and the width and height of the obstacles are set randomly
+    if(obstacles.length <= 0 || width - obstacles[obstacles.length - 1].x >= nextReappearDistance){
+        obstacles.push(new Obstacle(width, ground.y)); 
+        nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
+  }
+  
     // loop through all the obstacles in the array and call the update function and draw function for each obstacle
     for (let i = obstacles.length - 1; i >= 0; i--) {
         obstacles[i].update();
@@ -168,7 +179,7 @@ class Obstacle extends Shape {
         let y = yGround - obstacleHeight;
         super(x, y, obstacleWidth, obstacleHeight);
         this.fillColor = color(130, 0, 0);
-        this.speed = 10;
+        this.speed = 10 + score * 0.1; // Example: Increase speed as score increases
         this.hasScoredYet = false;
     }
     update() {
@@ -190,8 +201,8 @@ class Obstacle extends Shape {
 }
     class Character extends Shape {
         constructor(yGround) {
-            let characterWidth = 50;
-            let characterHeight = 50;
+            let characterWidth = 100;
+            let characterHeight = 75;
             let y = yGround - characterHeight;
             super(100, y, characterWidth, characterHeight);
             this.fillColor = color(0, 0, 255);
@@ -216,7 +227,7 @@ class Obstacle extends Shape {
         // It sets the vertical velocity of the character to a negative value, making it move upwards
         // The jumpStrength variable determines how high the character jumps
         jump() {
-            this.velocityY += -this.jumpStrength;
+            this.velocityY = -this.jumpStrength;
         }
         // Removed misplaced if block
         // The isOnFloor function checks if the character is on the floor
