@@ -19,136 +19,6 @@ function preload() {
 function loadAssets() {
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
-// The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
-function setup() {
-    createCanvas(1350, 700);
-    console.log("Debug console setup complete");
-    load();
-    // Create a new character object at the floor level
-    textFont(codaFontRegular);
-    floor = new Floor(); // Ensure this is initialized before referencing floor.y
-    obstacles = [new Obstacle(width, floor.y)];
-    character = new Character(floor.y);
-    resetGame();
-} 
-// To reset the game, we set the score to 0, set the game over flag to false, and call the loop function to start the game again.
-// The loop function is called repeatedly to update the game state and render the graphics.
-function resetGame() {
-    score = 0;
-    theGameOver = false;
-    
-    character = new Character(floor.y);
-    obstacles = [new Obstacle(width, floor.y)];
-    loop();
-}
-
-function draw(){
-    image(sgImage, 0, 0, width, height);
-    text("Press p to play!", 650, 300);
-    textSize(35);
-    textAlign("center");
-
-    // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
-    // The nextReappearDistance variable is used to control the distance between obstacles
-    // The random function generates a random number between the minimum distance and 1.2 times the width of the canvas
-    // The obstacles array is used to store the obstacles in the game
-    // The obstacles array is initialized with a new obstacle at the right edge of the canvas
-    // The Obstacle class is used to create new obstacles, and the width and height of the obstacles are set randomly
-    if(obstacles.length <= 0 || width - obstacles[obstacles.length - 1].x >= nextReappearDistance){
-        obstacles.push(new Obstacle(width, ground.y)); 
-        nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
-  }
-  
-    // loop through all the obstacles in the array and call the update function and draw function for each obstacle
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-        obstacles[i].update();
-        obstacles[i].draw();
-
-        // Check for collision
-        // The checkCollision function checks if the character collides with any of the obstacles
-        // If the character collides with an obstacle and the game is not in unstoppable mode, set the game over flag to true
-        if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
-            theGameOver = true;
-            noLoop(); // Stop the game loop since the game is over
-        }
-
-        // Remove obstacles that are moving out of the screen
-        // The getRight function returns the rightmost x-coordinate of the obstacle
-        // If the rightmost x-coordinate of the obstacle is less than 0, it means the obstacle is out of the screen
-        if (obstacles[i].getRight() < 0) {
-            obstacles.splice(i, 1);
-        }
-
-        // Increment the score if the character has passed an obstacle
-        // The hasScoredYet variable is used to check if the character has already scored for this obstacle
-        // If the character's x-coordinate is greater than the rightmost x-coordinate of the obstacle, it means the character has passed the obstacle
-        // If the character has not scored yet for this obstacle, set the hasScoredYet variable to true and increment the score
-        if (!obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
-            obstacles[i].hasScoredYet = true;
-            score++;
-            console.log("Score: " + score);
-        }
-    }
-
-    // Updates the state of the character object
-    character.update(floor.y);
-    // The floor.y is the y-coordinate of the floor, which is used to update the character's position and makes sure the character interacts correctly with the floor
-    character.draw();
-    drawScore();
-}
-// The drawScore function is responsible for displaying the score on the screen
-function drawScore() {
-    fill(0);
-    textSize(32);
-    textAlign(LEFT);
-    text("Score: " + score, 10, 30);
-
-    // If the game is over, display the game over message and the score
-    // The condition checks if the game is over and if the score is greater than 0
-    // If both conditions are true, it means the game is over, and we display the game over message
-    // The text is displayed in the center of the screen, and the fill color is set to red
-    if (theGameOver) {
-        //dark overlay
-        fill(0, 0, 0, 100);
-        rect(0, 0, width, height);
-        //Game Over text
-        textSize(34);
-        textAlign(CENTER);
-        fill(255, 0, 0);
-        text("GAME OVER", width / 2, height / 2);
-        //Play again text
-        textSize(32);
-        text("Press p to play again!", width / 2, height / 2 + 50);
-    }
-    // If we are here, the game has not started yet for the first time
-    else if (haveGameBegun == false) {
-        // Dark overlay
-        fill(0, 0, 0, 100);
-        rect(0, 0, width, height);
-        // Draw "Press p to play!" text
-        textSize(34);
-        textAlign(CENTER);
-        fill(255, 0, 0);
-        text("Press p to play!", width / 2, height / 2);
-    }
-}
-// The keyPressed function is called whenever a key is pressed
-// It checks for specific key presses and performs actions based on them
-function keyPressed() { 
-    if (key == 'p' && character.isOnFloor()) { // p key to play
-        character.jump();
-    }
-
-    //check for special states like when the game is over or when the game has not started yet
-    if (theGameOver == true && key == 'p') {
-        resetGame();
-    }
-    //
-    else if(haveGameBegun == false && key == 'p') {
-        haveGameBegun = true;
-        loop();
-    }
-}
 // The floor class is a subclass of the Shape class
 // It represents the ground in the game and is responsible for drawing the floor on the screen
 // The constructor initializes the floor's position and dimensions
@@ -266,4 +136,137 @@ class Shape {
         return this.x + this.width;
     }
 }
+// The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
+function setup() {
+    createCanvas(1350, 700);
+    setupDebugConsole();
+    console.log("Debug console setup complete");
+    textFont(codaFontRegular);
+    loadAssets();
+    nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
+    // Create a new character object at the floor level
+    floor = new Floor(); // Ensure this is initialized before referencing floor.y
+    obstacles = [new Obstacle(width, floor.y)];
+    character = new Character(floor.y);
+    resetGame();
+} 
+// To reset the game, we set the score to 0, set the game over flag to false, and call the loop function to start the game again.
+// The loop function is called repeatedly to update the game state and render the graphics.
+function resetGame() {
+    score = 0;
+    theGameOver = false;
+    
+    character = new Character(floor.y);
+    obstacles = [new Obstacle(width, floor.y)];
+    loop();
+}
+
+function draw(){
+    image(sgImage, 0, 0, width, height);
+    text("Press p to play!", 650, 300);
+    textSize(35);
+    textAlign("center");
+
+    // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
+    // The nextReappearDistance variable is used to control the distance between obstacles
+    // The random function generates a random number between the minimum distance and 1.2 times the width of the canvas
+    // The obstacles array is used to store the obstacles in the game
+    // The obstacles array is initialized with a new obstacle at the right edge of the canvas
+    // The Obstacle class is used to create new obstacles, and the width and height of the obstacles are set randomly
+    if(obstacles.length <= 0 || width - obstacles[obstacles.length - 1].x >= nextReappearDistance){
+        obstacles.push(new Obstacle(width, floor.y)); 
+        nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
+  }
+  
+    // loop through all the obstacles in the array and call the update function and draw function for each obstacle
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].update();
+        obstacles[i].draw();
+
+        // Check for collision
+        // The checkCollision function checks if the character collides with any of the obstacles
+        // If the character collides with an obstacle and the game is not in unstoppable mode, set the game over flag to true
+        if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
+            theGameOver = true;
+            noLoop(); // Stop the game loop since the game is over
+        }
+
+        // Remove obstacles that are moving out of the screen
+        // The getRight function returns the rightmost x-coordinate of the obstacle
+        // If the rightmost x-coordinate of the obstacle is less than 0, it means the obstacle is out of the screen
+        if (obstacles[i].getRight() < 0) {
+            obstacles.splice(i, 1);
+        }
+
+        // Increment the score if the character has passed an obstacle
+        // The hasScoredYet variable is used to check if the character has already scored for this obstacle
+        // If the character's x-coordinate is greater than the rightmost x-coordinate of the obstacle, it means the character has passed the obstacle
+        // If the character has not scored yet for this obstacle, set the hasScoredYet variable to true and increment the score
+        if (!obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
+            obstacles[i].hasScoredYet = true;
+            score++;
+            console.log("Score: " + score);
+        }
+    }
+
+    // Updates the state of the character object
+    character.update(floor.y);
+    // The floor.y is the y-coordinate of the floor, which is used to update the character's position and makes sure the character interacts correctly with the floor
+    character.draw();
+    drawScore();
+}
+// The drawScore function is responsible for displaying the score on the screen
+function drawScore() {
+    fill(0);
+    textSize(32);
+    textAlign(LEFT);
+    text("Score: " + score, 10, 30);
+
+    // If the game is over, display the game over message and the score
+    // The condition checks if the game is over and if the score is greater than 0
+    // If both conditions are true, it means the game is over, and we display the game over message
+    // The text is displayed in the center of the screen, and the fill color is set to red
+    if (theGameOver) {
+        //dark overlay
+        fill(0, 0, 0, 100);
+        rect(0, 0, width, height);
+        //Game Over text
+        textSize(34);
+        textAlign(CENTER);
+        fill(255, 0, 0);
+        text("GAME OVER", width / 2, height / 2);
+        //Play again text
+        textSize(32);
+        text("Press p to play again!", width / 2, height / 2 + 50);
+    }
+    // If we are here, the game has not started yet for the first time
+    else if (haveGameBegun == false) {
+        // Dark overlay
+        fill(0, 0, 0, 100);
+        rect(0, 0, width, height);
+        // Draw "Press p to play!" text
+        textSize(34);
+        textAlign(CENTER);
+        fill(255, 0, 0);
+        text("Press p to play!", width / 2, height / 2);
+    }
+}
+// The keyPressed function is called whenever a key is pressed
+// It checks for specific key presses and performs actions based on them
+function keyPressed() { 
+    if (key == 'p' && character.isOnFloor()) { // p key to play
+        character.jump();
+    }
+
+    //check for special states like when the game is over or when the game has not started yet
+    if (theGameOver == true && key == 'p') {
+        resetGame();
+    }
+    // If the game has not started yet and the p key is pressed, set the haveGameBegun variable to true and start the game loop
+    else if(haveGameBegun == false && key == 'p') {
+        haveGameBegun = true;
+        loop();
+    }
+}
+
 
