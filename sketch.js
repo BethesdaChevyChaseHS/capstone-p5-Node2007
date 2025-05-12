@@ -13,12 +13,10 @@ let isUnstoppable = false;
 let sgImage;
 
 function preload() {
-    sgImage = loadImage("Scenery.jpeg"); // Ensure the file exists in the correct path
-}
-
-function loadAssets() {
+    sgImage = loadImage("Scenery.jpeg");
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
+
 // The floor class is a subclass of the Shape class
 // It represents the ground in the game and is responsible for drawing the floor on the screen
 // The constructor initializes the floor's position and dimensions
@@ -83,7 +81,7 @@ class Obstacle extends Shape {
             this.yGround = yGround;
             this.jumpStrength = 15; // Add this to the constructorth = 15; // Add this to the constructor
         }
-        update(yGround) {
+        update() {
             this.velocityY += this.gravity;
             this.velocityY *= 0.9; // Apply some damping to the vertical velocity
             this.y += this.velocityY;
@@ -126,10 +124,10 @@ class Shape {
     }
 
     overlaps(other) {
-        return !(this.x + this.width < other.x ||
-                 this.x > other.x + other.width ||
-                 this.y + this.height < other.y ||
-                 this.y > other.y + other.height);
+        return !(this.x + this.width <= other.x || // Changed `<` to `<=`
+                 this.x >= other.x + other.width ||
+                 this.y + this.height <= other.y || // Changed `<` to `<=`
+                 this.y >= other.y + other.height);
     }
 
     getRight() {
@@ -142,7 +140,6 @@ function setup() {
     setupDebugConsole();
     console.log("Debug console setup complete");
     textFont(codaFontRegular);
-    loadAssets();
     nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
     // Create a new character object at the floor level
     floor = new Floor(); // Ensure this is initialized before referencing floor.y
@@ -155,17 +152,22 @@ function setup() {
 function resetGame() {
     score = 0;
     theGameOver = false;
-    
+    nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
     character = new Character(floor.y);
     obstacles = [new Obstacle(width, floor.y)];
     loop();
 }
 
-function draw(){
+function draw() {
+    if (!haveGameBegun) {
+        drawScore(); // Show the "Press p to play!" message
+        return;
+    }
+
     image(sgImage, 0, 0, width, height);
-    text("Press p to play!", 650, 300);
     textSize(35);
-    textAlign("center");
+    textAlign("CENTER");
+    text("Press p to play!", 650, 300);
 
     // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
     // The nextReappearDistance variable is used to control the distance between obstacles
@@ -227,6 +229,7 @@ function drawScore() {
     // If both conditions are true, it means the game is over, and we display the game over message
     // The text is displayed in the center of the screen, and the fill color is set to red
     if (theGameOver) {
+        noLoop();
         //dark overlay
         fill(0, 0, 0, 100);
         rect(0, 0, width, height);
@@ -254,7 +257,7 @@ function drawScore() {
 // The keyPressed function is called whenever a key is pressed
 // It checks for specific key presses and performs actions based on them
 function keyPressed() { 
-    if (key == 'p' && character.isOnFloor()) { // p key to play
+    if (key == 'p' && haveGameBegun && character.isOnFloor()) { // p key to play
         character.jump();
     }
 
@@ -267,6 +270,13 @@ function keyPressed() {
         haveGameBegun = true;
         loop();
     }
+    if (key == ' ') {
+        isUnstoppable = !isUnstoppable; // Toggle unstoppable mode
+        if (isUnstoppable) {
+            character.fillColor = color(0, 255, 0); // Change color to green
+        } else {
+            character.fillColor = color(0, 0, 255); // Change color back to blue
+        }
+    }
 }
-
 
