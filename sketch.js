@@ -16,7 +16,25 @@ function preload() {
     sgImage = loadImage("Scenery.jpeg");
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
+class Shape {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
+    overlaps(other) {
+        return !(this.x + this.width <= other.x || // Changed `<` to `<=`
+                 this.x >= other.x + other.width ||
+                 this.y + this.height <= other.y || // Changed `<` to `<=`
+                 this.y >= other.y + other.height);
+    }
+
+    getRight() {
+        return this.x + this.width;
+    }
+}
 // The floor class is a subclass of the Shape class
 // It represents the ground in the game and is responsible for drawing the floor on the screen
 // The constructor initializes the floor's position and dimensions
@@ -76,7 +94,7 @@ class Obstacle extends Shape {
             this.fillColor = color(0, 0, 255);
             this.speed = 5;
             this.jumpSpeed = -15;
-            this.gravity = 0.5;
+            this.gravity = 0.1;
             this.velocityY = 0;
             this.yGround = yGround;
             this.jumpStrength = 15; // Add this to the constructorth = 15; // Add this to the constructor
@@ -86,7 +104,7 @@ class Obstacle extends Shape {
             this.velocityY *= 0.9; // Apply some damping to the vertical velocity
             this.y += this.velocityY;
 
-            if (this.y + this.height > yGround) {
+            if (this.y + this.height > this.yGround) {
                 this.y = this.yGround - this.height;
                 this.velocityY = 0; // Reset velocity only when hitting the ground
             }
@@ -115,25 +133,8 @@ class Obstacle extends Shape {
                 pop();
             }
         }
-class Shape {
-    constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
+    
 
-    overlaps(other) {
-        return !(this.x + this.width <= other.x || // Changed `<` to `<=`
-                 this.x >= other.x + other.width ||
-                 this.y + this.height <= other.y || // Changed `<` to `<=`
-                 this.y >= other.y + other.height);
-    }
-
-    getRight() {
-        return this.x + this.width;
-    }
-}
 // The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
 function setup() {
     createCanvas(1350, 700);
@@ -167,7 +168,6 @@ function draw() {
     image(sgImage, 0, 0, width, height);
     textSize(35);
     textAlign("CENTER");
-    text("Press p to play!", 650, 300);
 
     // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
     // The nextReappearDistance variable is used to control the distance between obstacles
