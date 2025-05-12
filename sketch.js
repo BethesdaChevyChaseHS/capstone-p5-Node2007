@@ -88,12 +88,12 @@ class Obstacle extends Shape {
     class Character extends Shape {
         constructor(yGround) {
             let characterWidth = 100;
-            let characterHeight = 75;
+            let characterHeight = 150;
             let y = yGround - characterHeight;
             super(100, y, characterWidth, characterHeight);
             this.fillColor = color(0, 0, 255);
             this.speed = 5;
-            this.jumpSpeed = -15;
+            this.jumpSpeed = 10;
             this.gravity = 0.1;
             this.velocityY = 0;
             this.yGround = yGround;
@@ -139,7 +139,6 @@ class Obstacle extends Shape {
 function setup() {
     createCanvas(1350, 700);
     setupDebugConsole();
-    console.log("Debug console setup complete");
     textFont(codaFontRegular);
     nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
     // Create a new character object at the floor level
