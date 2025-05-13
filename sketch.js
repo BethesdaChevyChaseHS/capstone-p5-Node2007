@@ -271,9 +271,12 @@ function keyPressed() {
         loop();
     }
     
+    let unstoppableTimer = 0;
     // If the game is not over and the space key is pressed, toggle unstoppable mode
     if (key == ' ') {
         isUnstoppable = !isUnstoppable; // Toggle unstoppable mode
+        unstoppableTimer = isUnstoppable ? millis() : 0;
+        character.fillColor = isUnstoppable ? color(0, 255, 0) : color(0, 0, 255);
         if (isUnstoppable) {
             character.fillColor = color(0, 255, 0); // Change color to green
         } else {
