@@ -18,7 +18,7 @@ function preload() {
 }
 // The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
 function setup() {
-    createCanvas(1350, 700);
+    createCanvas(1350, 620);
     setupDebugConsole();
     textFont(codaFontRegular);
     nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
