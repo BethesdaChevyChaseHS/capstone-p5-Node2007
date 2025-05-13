@@ -54,7 +54,7 @@ class Shape {
 // The fill color of the floor is set to a specific color
 class Floor extends Shape {
     constructor() {
-        let yFloor = height * 0.8;
+        let yFloor = height * 0.85;
         let floorHeight = ceil(height - yFloor);
         super(0, yFloor, width, floorHeight);
         this.fillColor = color(130);
@@ -271,6 +271,7 @@ function keyPressed() {
         loop();
     }
     
+    // If the game is not over and the space key is pressed, toggle unstoppable mode
     if (key == ' ') {
         isUnstoppable = !isUnstoppable; // Toggle unstoppable mode
         if (isUnstoppable) {
