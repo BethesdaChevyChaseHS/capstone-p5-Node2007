@@ -107,10 +107,10 @@ class Obstacle extends Shape {
             this.fillColor = color(0, 0, 255);
             this.speed = 5;
             this.jumpSpeed = 10;
-            this.gravity = 0.1;
+            this.gravity = 1;
             this.velocityY = 0;
             this.yGround = yGround;
-            this.jumpStrength = 15; // Add this to the constructorth = 15; // Add this to the constructor
+            this.jumpStrength = 50; // Add this to the constructor
         }
         update() {
             this.velocityY += this.gravity;
