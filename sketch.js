@@ -16,6 +16,18 @@ function preload() {
     sgImage = loadImage("Scenery.jpeg");
     codaFontRegular = loadFont("./Coda-Regular.ttf");
 }
+// The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
+function setup() {
+    createCanvas(1350, 700);
+    setupDebugConsole();
+    textFont(codaFontRegular);
+    nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
+    // Create a new character object at the floor level
+    floor = new Floor(); // Ensure this is initialized before referencing floor.y
+    obstacles = [new Obstacle(width, floor.y)];
+    character = new Character(floor.y);
+    resetGame();
+} 
 class Shape {
     constructor(x, y, width, height) {
         this.x = x;
@@ -65,7 +77,8 @@ class Obstacle extends Shape {
         let y = yGround - obstacleHeight;
         super(x, y, obstacleWidth, obstacleHeight);
         this.fillColor = color(130, 0, 0);
-        this.speed = 10 + score * 0.1; // Example: Increase speed as score increases
+        const speedScalingFactor = 0.1;
+        this.speed = 10 + score * speedScalingFactor; // Example: Increase speed as score increases
         this.hasScoredYet = false;
     }
     update() {
@@ -134,19 +147,6 @@ class Obstacle extends Shape {
             }
         }
     
-
-// The setup function is called once when the program starts. It initializes the canvas size, sets up the debug console, and loads the font.
-function setup() {
-    createCanvas(1350, 700);
-    setupDebugConsole();
-    textFont(codaFontRegular);
-    nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
-    // Create a new character object at the floor level
-    floor = new Floor(); // Ensure this is initialized before referencing floor.y
-    obstacles = [new Obstacle(width, floor.y)];
-    character = new Character(floor.y);
-    resetGame();
-} 
 // To reset the game, we set the score to 0, set the game over flag to false, and call the loop function to start the game again.
 // The loop function is called repeatedly to update the game state and render the graphics.
 function resetGame() {
@@ -155,7 +155,7 @@ function resetGame() {
     nextReappearDistance = random(minDistanceBetweenObstacles, width * 1.2);
     character = new Character(floor.y);
     obstacles = [new Obstacle(width, floor.y)];
-    loop();
+    loop(); // Restart the game loop
 }
 
 function draw() {
@@ -168,7 +168,8 @@ function draw() {
     textSize(35);
     textAlign("CENTER");
 
-    // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater than the next reappear distance, create a new obstacle
+    // If the obstacles array is empty or the distance from the last obstacle to the right edge of the canvas is greater 
+    // than the next reappear distance, create a new obstacle
     // The nextReappearDistance variable is used to control the distance between obstacles
     // The random function generates a random number between the minimum distance and 1.2 times the width of the canvas
     // The obstacles array is used to store the obstacles in the game
@@ -187,12 +188,12 @@ function draw() {
         // Check for collision
         // The checkCollision function checks if the character collides with any of the obstacles
         // If the character collides with an obstacle and the game is not in unstoppable mode, set the game over flag to true
-        if (isUnstoppable != true && obstacles[i].checkCollision(character)) {
+        if (!isUnstoppable && obstacles[i].checkCollision(character)) {
             theGameOver = true;
             noLoop(); // Stop the game loop since the game is over
         }
 
-        // Remove obstacles that are moving out of the screen
+        // Remove obstacles that are out of the screen
         // The getRight function returns the rightmost x-coordinate of the obstacle
         // If the rightmost x-coordinate of the obstacle is less than 0, it means the obstacle is out of the screen
         if (obstacles[i].getRight() < 0) {
@@ -203,7 +204,7 @@ function draw() {
         // The hasScoredYet variable is used to check if the character has already scored for this obstacle
         // If the character's x-coordinate is greater than the rightmost x-coordinate of the obstacle, it means the character has passed the obstacle
         // If the character has not scored yet for this obstacle, set the hasScoredYet variable to true and increment the score
-        if (!obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
+        if (obstacles[i] instanceof Obstacle && character && !obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
             obstacles[i].hasScoredYet = true;
             score++;
             console.log("Score: " + score);
@@ -269,6 +270,7 @@ function keyPressed() {
         haveGameBegun = true;
         loop();
     }
+    
     if (key == ' ') {
         isUnstoppable = !isUnstoppable; // Toggle unstoppable mode
         if (isUnstoppable) {
