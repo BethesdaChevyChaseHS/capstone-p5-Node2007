@@ -207,7 +207,6 @@ function draw() {
         if (obstacles[i] instanceof Obstacle && character && !obstacles[i].hasScoredYet && obstacles[i].getRight() < character.x) {
             obstacles[i].hasScoredYet = true;
             score++;
-            console.log("Score: " + score);
         }
     }
 
