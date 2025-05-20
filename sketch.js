@@ -244,12 +244,12 @@ function drawScore() {
     // If we are here, the game has not started yet for the first time
     else if (haveGameBegun == false) {
         // Dark overlay
-        fill(0, 0, 0, 100);
+        fill(0, 100, 0, 100);
         rect(0, 0, width, height);
         // Draw "Press p to play!" text
         textSize(34);
         textAlign(CENTER);
-        fill(255, 0, 0);
+        fill(0, 0, 255);
         text("Press p to play!", width / 2, height / 2);
     }
 }
