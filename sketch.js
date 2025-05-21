@@ -100,17 +100,17 @@ class Obstacle extends Shape {
 }
     class Character extends Shape {
         constructor(yGround) {
-            let characterWidth = 100;
+            let characterWidth = 50;
             let characterHeight = 150;
             let y = yGround - characterHeight;
             super(100, y, characterWidth, characterHeight);
             this.fillColor = color(0, 0, 255);
             this.speed = 5;
-            this.jumpSpeed = 10;
+            this.jumpSpeed = 20;
             this.gravity = 1;
             this.velocityY = 0;
             this.yGround = yGround;
-            this.jumpStrength = 50; // Add this to the constructor
+            this.jumpStrength = 65; // Add this to the constructor
         }
         update() {
             this.velocityY += this.gravity;
